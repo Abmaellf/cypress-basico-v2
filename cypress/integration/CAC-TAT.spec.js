@@ -92,7 +92,7 @@ describe('Central de Atendimento ao Cliente TAT', function() {
     })
 
     it('envia o formuário com sucesso usando um comando customizado', () => {
-      cy.fillMandatoryFieldsAndSubmit()
+      cy.fillMandatoryFieldsAndSubmit
     })
 
     it('seleciona um produto (YouTube) por seu texto', function() {
@@ -169,7 +169,7 @@ describe('Central de Atendimento ao Cliente TAT', function() {
       
     })
 
-    it.only('exibe mensagem de erro quando o telefone se torna obrigatório mas não é preenchido antes do envio do formulário with check', function() {
+    it('exibe mensagem de erro quando o telefone se torna obrigatório mas não é preenchido antes do envio do formulário with check', function() {
       cy.get('#firstName').type('Abmael')
       cy.get('#lastName').type('Ferreir')
       cy.get('#email').type('abmael@hotmail.com')        
@@ -179,23 +179,45 @@ describe('Central de Atendimento ao Cliente TAT', function() {
 
       cy.get('.error').should('be.visible') 
       
- })
+    })
 
+    //Exemplo da Live https://www.youtube.com/watch?v=xwltoOnmfVE
+    it('seleciona um arquivo da pasta fixtures', function () {
+      cy.get('input[type="file"]')
+        .selectFile('cypress/fixtures/example.json')
+        .then(input => {
+          console.log(input)
+          expect(input[0].files[0].name).to.equal('example.json');
+        })
+    })
 
+    //Exemplo da aula 29 
+    it('seleciona um arquivo da pasta fixtures', function () {
+      cy.get('input[type="file"]')
+        .should('not.have.value')
+        .selectFile('cypress/fixtures/example.json')
+        .should(function($input) {
+          expect($input[0].files[0].name).to.equal('example.json');
+        })
+    })
 
+    it('seleciona um arquivo simulando um drag-and-drop', function () {
+      cy.get('input[type="file"]')
+        .should('not.have.value')
+        .selectFile('cypress/fixtures/example.json', { action: 'drag-drop'})
+        .should(function($input) {
+          expect($input[0].files[0].name).to.equal('example.json');
+        })
+    })
+
+    it('seleciona um arquivo utilizando uma fixture para a qual foi dada um alias', function() {
+      cy.fixture('example.json').as('sampleFile')
+      cy.get('input[type="file"]')
+        .selectFile('@sampleFile')
+        .should(function($input) {
+          expect($input[0].files[0].name).to.equal('example.json');
+        })
+    })
 
 })
   
-/**
- * cy.get('select option')
-        .as('options')
-        .its('length', { log: false }).then(n => {
-          cy.get('@options', { log:false }).then($options => {
-            const randomOptionIndex = Cypress._.random(n - 1)
-            const randomOptionText = $options[randomOptionIndex].innerText
-            cy.get('select').select(randomOptionText)
-
-            cy.should('have.value', randomOptionText )
-          })
-        })
- */
